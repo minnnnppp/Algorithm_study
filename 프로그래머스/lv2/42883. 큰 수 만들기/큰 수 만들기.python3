@@ -1,0 +1,12 @@
+def solution(number, k):
+    # 스택을 사용한 풀이
+    stack = [] 
+    
+    # number의 숫자가 stack의 수보다 크면 기존의 stack의 수를 num으로 대체하기
+    for num in number:
+        while k > 0 and stack and stack[-1] < num:  
+            stack.pop()     # stack에서 기존의 값 제거
+            k -= 1          
+        stack.append(num)   # stack에 num 추가하기
+        
+    return ''.join(stack[:len(stack) - k])      # 문자열로 반환하기
