@@ -1,0 +1,14 @@
+def solution(people, limit):
+    answer = 0
+    people.sort()       # 오름차순 정렬하기
+
+    a = 0               # 두 개의 인덱스
+    b = len(people) - 1
+    
+    # 가능한 조합 만들고
+    while a < b :
+        if people[b] + people[a] <= limit : # limit을 초과하지 않을 때
+            a += 1      # 첫 번째 인덱스 +1하고
+            answer += 1 # 정답도 하나 올리고
+        b -= 1          # 맨마지막 사람은 태웠으니까 두 번재 인덱스는 -1하기
+    return len(people) - answer # 총 길이에서 answer를 빼주어 정답 구하기
