@@ -1,0 +1,11 @@
+def solution(phone_book):
+    phone_book.sort()
+    
+    # 반복문: input의 두 요소를 비교
+    for x, y in zip(phone_book, phone_book[1:]):
+    ## 길이가 짧은 요소를 긴 요소가 포함하고 있다면 짧은 것을 접두사라고 할 수 있음
+    ## 단순히 포함하는 게 아니라 그 숫자로 시작해야 하니까 startswith 사용
+        if y.startswith(x):
+            return False
+        
+    return True
