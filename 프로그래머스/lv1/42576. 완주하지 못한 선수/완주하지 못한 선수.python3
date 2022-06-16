@@ -1,0 +1,7 @@
+def solution(participant, completion):
+    participant.sort()
+    completion.sort()
+    
+    for pp, cp in zip(participant, completion):
+        if pp != cp:
+            return pp
