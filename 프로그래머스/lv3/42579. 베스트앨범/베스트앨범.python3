@@ -1,0 +1,22 @@
+def solution(genres, plays):
+    answer = []
+
+    dic1 = {}
+    dic2 = {}
+
+    for i, (g, p) in enumerate(zip(genres, plays)):
+        if g not in dic1:       # 장르가 없으면
+            dic1[g] = [(i, p)]  # 장르를 key로 재생 수 추가
+        else:
+            dic1[g].append((i, p))  # 있으면 재생 수만 추가
+
+        if g not in dic2:       # 장르가 없으면
+            dic2[g] = p         # 위와 동일하게 추가   
+        else:
+            dic2[g] += p        # 위와 동일하게 추가  
+
+    for (k, v) in sorted(dic2.items(), key=lambda x:x[1], reverse=True):    # value 값을 기준으로 내림차순 정렬
+        for (i, p) in sorted(dic1[k], key=lambda x:x[1], reverse=True)[:2]: 
+            answer.append(i)
+
+    return answer
