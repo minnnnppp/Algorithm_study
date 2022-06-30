@@ -1,0 +1,18 @@
+from collections import deque   # deque 활용
+def solution(numbers, target):
+    answer = 0
+    queue = deque()
+    n = len(numbers)
+    queue.append([numbers[0],0])
+    queue.append([-1*numbers[0],0])     # numbers의 첫 번째 수에 +/-해서 deque에 추가하기
+    
+    while queue:
+        temp, idx = queue.popleft()     # 가장 앞의 숫자와 인덱스 출력
+        idx += 1                        # 인덱스에 +1 더하기
+        if idx < n:                     # 인덱스가 numbers 길이보다 작다면
+            queue.append([temp+numbers[idx], idx])      # deque에 그 다음 숫자를 더하거나
+            queue.append([temp-numbers[idx], idx])      # 뺀 값을 deque에 추가하기 = 그럼 deque에는 계산한 값만 남게 됨
+        else:                           # 인덱스 값이 길이와 같다면
+            if temp == target:          # 그리고 계산값과 target이 같다면
+                answer += 1             # 경우의 수를 하나 추가하기
+    return answer
