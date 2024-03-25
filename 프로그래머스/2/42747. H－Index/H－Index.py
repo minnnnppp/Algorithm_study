@@ -1,6 +1,5 @@
 def solution(citations):
     citations = sorted(citations, reverse = True)
-    cnt = 0
     if max(citations) == 0:
         return 0
     else:
