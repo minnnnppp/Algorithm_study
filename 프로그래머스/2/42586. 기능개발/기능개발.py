@@ -1,9 +1,17 @@
+import math
 def solution(progresses, speeds):
-    answer = []
-    for p, s in zip(progresses, speeds):
-        if len(answer)==0 or answer[-1][0] < -((p-100)//s):
-            answer.append([-((p-100)//s), 1])
+    days = [math.ceil((100 - p)/s) for p, s in zip(progresses, speeds) ]
+    target = []
+    cnt, maxx = 1, days[0]
+    for d in days[1:]:
+        if d <= maxx:
+            cnt+=1
         else:
-            answer[-1][1]+=1
-            
-    return [_lst[-1] for _lst in answer]
+            target.append(cnt)
+            cnt = 1
+            if d == days[-1]:
+                continue
+        maxx = max(maxx, d)
+    target.append(cnt)
+
+    return target
