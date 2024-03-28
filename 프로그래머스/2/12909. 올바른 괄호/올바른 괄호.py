@@ -7,12 +7,9 @@ def solution(s):
         if i == '(':
             stack.append(i)
         else:
-            if len(stack) >0:
+            try:
                 stack.pop()
-            else:
-                continue
+            except IndexError:
+                return False
     
-    if len(stack) ==0:
-        return True
-    else:
-        return False
+    return len(stack) == 0
