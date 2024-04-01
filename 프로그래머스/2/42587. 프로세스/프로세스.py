@@ -1,11 +1,16 @@
 def solution(priorities, location):
-    answ = 0
-    _lst = list(enumerate(priorities))
+    queue = list(enumerate(priorities))
+    cnt = 0
+                            
     while True:
-        _s = _lst.pop(0)
-        if any(_s[1] < x[1] for x in _lst):
-            _lst.append(_s)
+        target = queue.pop(0)
+        if any(target[1] < x[1] for x in queue):
+            queue.append(target)
         else:
-            answ += 1
-            if location == _s[0]:
-                return answ
+            cnt += 1
+            if target[0] == location:
+                return cnt
+        
+            
+            
+            
