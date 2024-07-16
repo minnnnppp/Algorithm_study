@@ -1,4 +1,3 @@
--- 코드를 입력하세요
-SELECT COUNT(DISTINCT USER_ID) AS USERS
-FROM USER_INFO
-WHERE AGE IS NULL
+select count(distinct USER_ID) as USERS
+from USER_INFO
+where AGE is null
