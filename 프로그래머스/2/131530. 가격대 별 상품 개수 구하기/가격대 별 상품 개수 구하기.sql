@@ -1,10 +1,8 @@
--- 코드를 입력하세요
-SELECT PRICE_GROUP, COUNT(DISTINCT PRODUCT_ID)
-FROM (
-    SELECT PRODUCT_ID
-            , CASE WHEN PRICE >= 10000 THEN TRUNCATE(PRICE, -4)
-                ELSE 0 END PRICE_GROUP
-    FROM PRODUCT
-    ) AS PP
-GROUP BY PRICE_GROUP
-ORDER BY PRICE_GROUP ASC
+select case 
+        when PRICE >= 10000 then truncate(PRICE, -4) 
+        else 0
+    end as PRICE_GROUP
+    , count(distinct PRODUCT_ID) as PRODUCTS
+from PRODUCT 
+group by PRICE_GROUP
+order by PRICE_GROUP
