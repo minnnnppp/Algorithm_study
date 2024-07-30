@@ -1,7 +1,6 @@
--- 코드를 작성해주세요
-SELECT COUNT(TIME) AS FISH_COUNT
-        , MONTH(DATE_FORMAT(TIME, '%Y-%m-%d')) AS MONTH
-FROM FISH_INFO
-GROUP BY MONTH
-HAVING FISH_COUNT IS NOT NULL
-ORDER BY MONTH ASC
+select count(distinct ID) as FISH_COUNT
+    , month(TIME) as MONTH
+from FISH_INFO
+group by MONTH
+having FISH_COUNT >0
+order by MONTH
