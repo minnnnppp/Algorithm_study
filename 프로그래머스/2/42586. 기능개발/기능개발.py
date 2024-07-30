@@ -1,17 +1,19 @@
 import math
 def solution(progresses, speeds):
-    days = [math.ceil((100 - p)/s) for p, s in zip(progresses, speeds) ]
-    target = []
-    cnt, maxx = 1, days[0]
-    for d in days[1:]:
-        if d <= maxx:
-            cnt+=1
-        else:
-            target.append(cnt)
-            cnt = 1
-            if d == days[-1]:
-                continue
-        maxx = max(maxx, d)
-    target.append(cnt)
+    nums = len(progresses)
+    remains = [math.ceil((100-x)/s) for x, s in zip(progresses, speeds)]
+    waits = [remains[0]]
+    answ = []
 
-    return target
+    for r in remains[1:]:
+        if max(waits) >= r:
+            waits.append(r)
+        else:
+            answ.append(len(waits))
+            waits = [r]
+
+    if waits:
+        answ.append(len(waits))
+        
+    return answ
+            
