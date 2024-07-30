@@ -1,9 +1,5 @@
--- 코드를 입력하세요
-SELECT MCDP_CD AS '진료과 코드', COUNT(*) AS '5월예약건수'
-FROM APPOINTMENT
-WHERE MONTH(APNT_YMD)=5
-GROUP BY MCDP_CD
-ORDER BY COUNT(*), MCDP_CD
-
-# SELECT *
-# FROM APPOINTMENT
+select MCDP_CD as '진료과코드', count(*) as '5월예약건수'
+from APPOINTMENT
+where date_format(APNT_YMD, '%Y-%m-%d') between '2022-05-01' and '2022-05-31'
+group by MCDP_CD
+order by COUNT(*),MCDP_CD
