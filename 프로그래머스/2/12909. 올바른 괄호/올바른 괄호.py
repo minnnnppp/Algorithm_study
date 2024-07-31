@@ -1,15 +1,32 @@
+from collections import deque
 def solution(s):
-    if s[0] == ')' or s[-1] == '(':
+    # 1) s의 길이 홀수 체크
+    if len(s)%2 == 1 :
         return False
     
-    stack = []
-    for i in s:
-        if i == '(':
-            stack.append(i)
-        else:
-            try:
-                stack.pop()
-            except IndexError:
-                return False
+    # 2) 첫번째, 마지막 괄호 체크
+    if s[0] == ')' or s[-1] == '(':
+        return False 
     
-    return len(stack) == 0
+    lst_s = deque(list(s))
+    wait = deque(list())
+    answer = False
+    
+    # 3) 그 외의 경우
+    while lst_s:
+        if wait:
+            _a = lst_s.popleft()
+            _b = wait[-1]
+            if _b == '(' and _a == ')':
+                wait.pop()
+                answer = True
+            else:
+                wait.append(_a)
+        else:
+            _b = lst_s.popleft()
+            wait.append(_b)
+            
+    if wait:
+        answer = False
+            
+    return answer
