@@ -1,16 +1,20 @@
+from collections import deque
 def solution(priorities, location):
-    queue = list(enumerate(priorities))
+    idx = deque(range(0, len(priorities)))
+    priorities = deque(priorities)
     cnt = 0
-                            
+    break_bool = False
+
     while True:
-        target = queue.pop(0)
-        if any(target[1] < x[1] for x in queue):
-            queue.append(target)
+        x = priorities.popleft()
+        y = idx.popleft()
+        if priorities:
+            if max(priorities) < x or max(priorities) == x:
+                cnt += 1
+                if y == location:
+                    return cnt
+            else:
+                priorities.append(x)
+                idx.append(y)
         else:
-            cnt += 1
-            if target[0] == location:
-                return cnt
-        
-            
-            
-            
+            return cnt+1    
