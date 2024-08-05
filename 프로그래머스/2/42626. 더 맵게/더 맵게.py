@@ -1,17 +1,15 @@
+import heapq
 def solution(scoville, K):
-    import heapq
     heapq.heapify(scoville)
-    now = scoville[0]
     cnt = 0
-    if now < K:
-        while now < K and len(scoville)>1:
-            mini = heapq.heappop(scoville)
-            mini2 = heapq.heappop(scoville)
-            target = mini + 2*mini2
-            heapq.heappush(scoville, target)
-            now = scoville[0]
-            cnt+=1
-    if now < K:
-        return -1
-    else: 
-        return cnt   
+    while True:
+        if scoville and scoville[0] < K:
+            if len(scoville)>1:
+                x = heapq.heappop(scoville)
+                y = heapq.heappop(scoville)
+                heapq.heappush(scoville, (x+(2*y)))
+                cnt += 1
+            else:
+                return -1
+        else:
+            return cnt
