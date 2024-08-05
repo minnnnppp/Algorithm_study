@@ -7,7 +7,7 @@ with rent_history_type as (
             when datediff(END_DATE, START_DATE)+1 >= 7 then '7일 이상'
         else null end as DURATION_TYPE
     from CAR_RENTAL_COMPANY_RENTAL_HISTORY h
-        join CAR_RENTAL_COMPANY_CAR c on h.CAR_ID = c.CAR_ID
+        left join CAR_RENTAL_COMPANY_CAR c on h.CAR_ID = c.CAR_ID
     where CAR_TYPE = '트럭'
 ), only_truck as (
     select *
