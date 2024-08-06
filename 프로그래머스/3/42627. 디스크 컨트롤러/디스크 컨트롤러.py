@@ -1,23 +1,20 @@
 import heapq
 def solution(jobs):
-    start, now, num, i = -1, 0, 0, 0
-    answ = 0
-    heap = []
+    total_time = sum([x[1] for x in jobs])
+    complete = []
+    answ = []
+    sec = 0
+    heapq.heapify(jobs)
 
-    while i < len(jobs):
-        print(f'1st_start: {start}')
-        for j in jobs:
-            if start < j[0] <= now:
-                heapq.heappush(heap, [j[1], j[0]])
+    while sec < total_time:
+        target = [x for x in jobs if (x[0] <= sec) and (x not in complete)]
+        if jobs and target:
+            target.sort(key = lambda x: x[1])
 
-        if len(heap)>0:
-            _c = heapq.heappop(heap)
-            start = now
-            print(f'2nd_start: {start}')
-            now += _c[0]
-            answ += (now - _c[1])
-            i+=1
+            sec += target[0][1]
+            answ.append(sec-target[0][0])
+            complete.append(target[0])
         else:
-            now+=1
-
-    return int(answ / len(jobs))
+            sec += 1
+        
+    return sum(answ)//len(answ)
