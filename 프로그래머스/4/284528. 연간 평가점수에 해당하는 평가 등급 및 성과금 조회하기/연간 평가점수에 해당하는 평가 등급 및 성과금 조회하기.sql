@@ -1,23 +1,20 @@
--- 코드를 작성해주세요
-WITH SCORES AS (
-    SELECT EMP_NO, 
-            CASE 
-                WHEN AVG(SCORE) >= 96 THEN 'S'
-                WHEN AVG(SCORE) >= 90 THEN 'A'
-                WHEN AVG(SCORE) >= 80 THEN 'B'
-                WHEN AVG(SCORE) < 80 THEN 'C'
-            END AS 'GRADE'
-    FROM HR_GRADE
-    GROUP BY EMP_NO
-)
-
-SELECT S.EMP_NO, EMP_NAME, GRADE, 
-        CASE 
-            WHEN GRADE = 'S' THEN 0.2*SAL
-            WHEN GRADE = 'A' THEN 0.15*SAL
-            WHEN GRADE = 'B' THEN 0.1*SAL
-            ELSE 0
-        END AS 'BONUS'
-FROM HR_EMPLOYEES H
-    JOIN SCORES S ON H.EMP_NO = S.EMP_NO
-ORDER BY S.EMP_NO
+select g.EMP_NO, EMP_NAME
+    , case 
+        when AVG_SCORE >= 96 then 'S'
+        when AVG_SCORE >= 90 then 'A'
+        when AVG_SCORE >= 80 then 'B'
+        else 'C'
+    end as GRADE
+    , case 
+        when AVG_SCORE >= 96 then round((SAL*0.2))
+        when AVG_SCORE >= 90 then round((SAL*0.15))
+        when AVG_SCORE >= 80 then round((SAL*0.1))
+        else 0
+    end as BONUS
+from (
+    select EMP_NO, avg(SCORE) as AVG_SCORE
+    from HR_GRADE
+    group by EMP_NO
+) g
+    join HR_EMPLOYEES e on g.EMP_NO = e.EMP_NO
+order by g.EMP_NO
