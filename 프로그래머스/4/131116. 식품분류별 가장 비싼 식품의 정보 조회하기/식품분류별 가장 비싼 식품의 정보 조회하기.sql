@@ -1,8 +1,13 @@
-select CATEGORY, PRICE as MAX_PRICE, PRODUCT_NAME
-from (
-    select *, rank() over(partition by CATEGORY order by PRICE desc) as rk
+with maxx as (
+    select CATEGORY, max(PRICE) as MAX_PRICE
     from FOOD_PRODUCT
     where CATEGORY in ('과자', '국', '김치', '식용유')
-) pp
-where rk = 1
+    group by CATEGORY
+)
+
+select p.CATEGORY, MAX_PRICE
+    , case when PRICE = MAX_PRICE then PRODUCT_NAME end as PRODUCT_NAME
+from FOOD_PRODUCT p
+    join maxx m on p.CATEGORY = m.CATEGORY
+having PRODUCT_NAME is not null
 order by MAX_PRICE desc
