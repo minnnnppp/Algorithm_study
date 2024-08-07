@@ -1,23 +1,32 @@
-WITH PCD AS (
-    SELECT CODE
-    FROM SKILLCODES
-    WHERE NAME = 'Python'
-), CCD AS (
-    SELECT CODE
-    FROM SKILLCODES
-    WHERE NAME = 'C#'
-), OCD AS (
-    SELECT SUM(CODE) AS CODE
-    FROM SKILLCODES
-    WHERE CATEGORY = 'Front End'
-)
+# with ad as (
+#     select ID
+#     from DEVELOPERS
+#     where SKILL_CODE & (select CODE from SKILLCODES where NAME = 'Python')
+#         and SKILL_CODE & (select sum(CODE) from SKILLCODES where CATEGORY = 'Front End')
+# ), bd as (
+#     select ID
+#     from DEVELOPERS
+#     where SKILL_CODE & (select CODE from SKILLCODES where NAME = 'C#')
+# )
+# , cd as (
+#     select ID
+#     from DEVELOPERS
+#     where (ID not in (select ID from ad)) and (ID not in (select ID from bd))
+#         and (SKILL_CODE & (select sum(CODE) from SKILLCODES where CATEGORY = 'Front End'))
+# )
 
-SELECT CASE 
-        WHEN SKILL_CODE & (SELECT CODE FROM PCD) 
-            AND SKILL_CODE & (SELECT CODE FROM OCD) THEN 'A'
-        WHEN SKILL_CODE & (SELECT CODE FROM CCD) THEN 'B'
-        WHEN SKILL_CODE & (SELECT CODE FROM OCD) THEN 'C'
-    END AS GRADE, ID, EMAIL
-FROM DEVELOPERS
-HAVING GRADE IS NOT NULL
-ORDER BY GRADE, ID
+select case when 
+            SKILL_CODE & (select CODE from SKILLCODES where NAME = 'Python')
+            and SKILL_CODE & (
+                select sum(CODE) from SKILLCODES 
+                where CATEGORY = 'Front End'
+            ) then 'A'
+            when SKILL_CODE & (select CODE from SKILLCODES where NAME = 'C#') then 'B'
+            when SKILL_CODE & (
+                select sum(CODE) from SKILLCODES 
+                where CATEGORY = 'Front End'
+            ) then 'C'
+        end as GRADE, ID, EMAIL
+from DEVELOPERS
+having GRADE is not null
+order by GRADE, ID
