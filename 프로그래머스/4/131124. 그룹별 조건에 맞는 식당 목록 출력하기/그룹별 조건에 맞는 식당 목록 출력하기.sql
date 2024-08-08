@@ -1,15 +1,17 @@
-# -- 코드를 입력하세요
-WITH TOP1 AS (
-    SELECT MEMBER_ID
-    FROM REST_REVIEW
-    GROUP BY MEMBER_ID
-    ORDER BY COUNT(DISTINCT REVIEW_ID) DESC
-    LIMIT 1
+with pp as (
+    select MEMBER_ID from REST_REVIEW group by MEMBER_ID 
+    order by count(distinct REVIEW_ID) desc limit 1
 )
 
-SELECT MEMBER_NAME, REVIEW_TEXT, DATE_FORMAT(REVIEW_DATE, '%Y-%m-%d') AS REVIEW_DATE
-FROM REST_REVIEW R
-    LEFT JOIN MEMBER_PROFILE P ON R.MEMBER_ID = P.MEMBER_ID
-WHERE R.MEMBER_ID IN (SELECT * FROM TOP1)
-ORDER BY REVIEW_DATE ASC, REVIEW_TEXT ASC
+select case when r.MEMBER_ID in (select * from pp) 
+                then MEMBER_NAME 
+        end as MEMBER_NAME, REVIEW_TEXT, date_format(REVIEW_DATE, '%Y-%m-%d') as REVIEW_DATE
+from REST_REVIEW r
+    join MEMBER_PROFILE m on r.MEMBER_ID = m.MEMBER_ID
+having MEMBER_NAME is not null
+order by REVIEW_DATE, REVIEW_TEXT
 
+# select MEMBER_ID, count(distinct REVIEW_ID)
+# from REST_REVIEW 
+# group by MEMBER_ID 
+# order by count(distinct REVIEW_ID) desc
