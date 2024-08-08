@@ -1,25 +1,21 @@
--- 코드를 입력하세요
-WITH PP AS(
-    SELECT H.CAR_ID, CAR_TYPE, DAILY_FEE
-    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY H
-        JOIN CAR_RENTAL_COMPANY_CAR C ON C.CAR_ID = H.CAR_ID
-    WHERE CAR_TYPE = 'SUV' OR CAR_TYPE = '세단'
-    GROUP BY H.CAR_ID
-    HAVING MAX(DATE_FORMAT(END_DATE, '%Y-%m-%d')) < '2022-11-01' 
-        OR MAX(DATE_FORMAT(START_DATE, '%Y-%m-%d')) > '2022-11-30' 
+with types_fees as (
+    select CAR_ID, CAR_TYPE, DAILY_FEE
+    from CAR_RENTAL_COMPANY_CAR
+    where CAR_TYPE in ('세단','SUV' )
+), disc as (
+    select CAR_TYPE, (100-DISCOUNT_RATE)/100 as TOTAL_RATE
+    from CAR_RENTAL_COMPANY_DISCOUNT_PLAN
+    where DURATION_TYPE like '30%'
+), disable as (
+    select distinct CAR_ID
+    from CAR_RENTAL_COMPANY_RENTAL_HISTORY
+    where END_DATE like '2022-11%' or START_DATE like '2022-11%'
+        or (START_DATE < '2022-11-01' and END_DATE > '2022-11-30')
 )
 
-SELECT CAR_ID, P.CAR_TYPE
-    , ROUND((DAILY_FEE*30)*((100-DISCOUNT_RATE)/100), 0) AS FEE
-FROM PP AS P
-    LEFT JOIN (
-        SELECT * 
-        FROM CAR_RENTAL_COMPANY_DISCOUNT_PLAN
-        WHERE DURATION_TYPE LIKE '30%'
-    ) AS D 
-    ON P.CAR_TYPE = D.CAR_TYPE
-HAVING FEE >= 500000 AND FEE < 2000000
-ORDER BY FEE DESC, P.CAR_TYPE ASC, CAR_ID DESC
-
-
-
+select case when CAR_ID not in (select * from disable) then CAR_ID end as CAR_ID
+    , f.CAR_TYPE, round((DAILY_FEE*30)*TOTAL_RATE) as FEE
+from types_fees f
+    join disc d on f.CAR_TYPE = d.CAR_TYPE
+having CAR_ID is not null and FEE >= 500000 and FEE < 2000000
+order by FEE desc, f.CAR_TYPE asc, CAR_ID desc
