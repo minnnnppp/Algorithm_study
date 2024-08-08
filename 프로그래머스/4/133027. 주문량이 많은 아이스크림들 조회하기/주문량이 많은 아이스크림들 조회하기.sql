@@ -1,16 +1,19 @@
--- 코드를 입력하세요
-WITH TT1 AS (  
-    SELECT FLAVOR, SUM(TOTAL_ORDER) AS TOTAL_ORDER
-    FROM FIRST_HALF
-    GROUP BY FLAVOR
-), TT2 AS (
-    SELECT FLAVOR, SUM(TOTAL_ORDER) AS TOTAL_ORDER
-    FROM JULY
-    GROUP BY FLAVOR
+with ju as (
+    select FLAVOR, sum(TOTAL_ORDER) as TOTAL_ORDER
+    from JULY
+    group by FLAVOR
+), fh as (
+    select FLAVOR, sum(TOTAL_ORDER) as TOTAL_ORDER
+    from FIRST_HALF
+    group by FLAVOR
+), ts as (
+    select j.FLAVOR, (j.TOTAL_ORDER+h.TOTAL_ORDER) as TOTAL_ORDER
+    from ju j
+        join fh h on j.FLAVOR = h.FLAVOR
 )
 
-SELECT T1.FLAVOR
-FROM TT1 T1
-    JOIN TT2 T2 ON T1.FLAVOR = T2.FLAVOR
-ORDER BY T1.TOTAL_ORDER + T2.TOTAL_ORDER DESC
-LIMIT 3
+select j.FLAVOR
+from ju j
+    join fh h on j.FLAVOR = h.FLAVOR
+order by (j.TOTAL_ORDER+h.TOTAL_ORDER) desc
+limit 3
