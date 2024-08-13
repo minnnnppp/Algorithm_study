@@ -1,12 +1,17 @@
 def solution(sizes):
-    max_l, max_w = 0, 0
-    
+    maxx, minn = 0, 0
     for s in sizes:
-        w,l = s[0], s[1]
-        maxx = max(w, l)
-        minn = min(w, l)
-        max_w = max(max_w,maxx)
-        max_l = max(max_l, minn)
-    
-    return max_w*max_l
+        _max = max(s[0], s[-1])
+        _min = min(s[0], s[-1])
         
+        if maxx== 0 and minn == 0:
+            maxx = _max
+            minn = _min
+        else:
+            maxx = max(maxx, _max)
+            minn = max(minn, _min)
+    
+    return maxx*minn
+        
+        
+            
