@@ -1,17 +1,17 @@
-with recursive BY_GENERATION as (
+with recursive generations as (
     select ID, 1 as GENERATION
     from ECOLI_DATA
     where PARENT_ID is null
-    UNION ALL
-    SELECT a.ID, b.GENERATION+1 as GENERATION
+    union all
+    select a.ID, GENERATION+1 
     from ECOLI_DATA a
-        join BY_GENERATION b on a.PARENT_ID = b.ID
+        join generations g on g.ID = a.PARENT_ID
 )
 
 select count(distinct a.ID) as COUNT, GENERATION
 from ECOLI_DATA a
-    join BY_GENERATION b on a.ID = b.ID
-    left join ECOLI_DATA c on a.ID = c.PARENT_ID
-where c.ID is null
+    join generations c on a.ID = c.ID
+    left join ECOLI_DATA b on b.PARENT_ID = a.ID
+where b.ID is null
 group by GENERATION
-order by GENERATION
+order by GENERATION;
