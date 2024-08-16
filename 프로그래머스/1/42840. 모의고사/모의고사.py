@@ -1,17 +1,18 @@
 def solution(answers):
-    type1 = [1, 2, 3, 4, 5]
-    type2 = [2, 1, 2, 3, 2, 4, 2, 5]
-    type3 = [3, 3, 1, 1, 2, 2, 4, 4, 5, 5]
-    dict_cnt = {x:0 for x in range(1,4)}
+    dict_answ = {
+        1: [1, 2, 3, 4, 5], 
+        2: [2, 1, 2, 3, 2, 4, 2, 5], 
+        3: [3, 3, 1, 1, 2, 2, 4, 4, 5, 5]
+    }
+    corrects_cnt = []
     
-    for i, a in list(enumerate(answers)):
-        if a==type1[i%len(type1)]:
-            dict_cnt[1]+=1
-        if a==type2[i%len(type2)]:
-            dict_cnt[2]+=1
-        if a==type3[i%len(type3)]:
-            dict_cnt[3]+=1
-            
+    for k, v in dict_answ.items():
+        n = len(answers)//len(v)
+        r = len(answers)%len(v)
+        target = v*n + v[:r]
+        corrects = [y for x, y in zip(target, answers) if x == y]
+        corrects_cnt.append([k, len(corrects)])
     
-    max_v = max(dict_cnt.values())
-    return [x for x in dict_cnt.keys() if dict_cnt[x]==max_v]
+    maxx = max(corrects_cnt, key = lambda x: x[1])[-1]
+    
+    return sorted([x[0] for x in corrects_cnt if x[1]==maxx])
