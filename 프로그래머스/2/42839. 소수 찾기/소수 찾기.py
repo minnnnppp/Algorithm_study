@@ -1,19 +1,30 @@
 from itertools import permutations
 def solution(numbers):
-    answs = list(numbers)
-    for i in range(2, len(numbers)+1):
-        _lst = list(permutations(numbers, i))
-        _lst = [list(x) for x in _lst]
-        _lst = [''.join(x) for x in _lst]
-        answs += _lst
-        
-    def is_primenum(x):
-        if x==0 or x==1:
-            return False
-        for i in range(2, x):
-            if x%i == 0:
-                return False
-        return True
+    lst_nums = list(numbers)
+    combs = []
+    cnt = 0
     
-    set_answ = set([int(x) for x in answs if is_primenum(int(x))])
-    return len(set_answ)
+    # def make_int(n):
+    #     answ = ''
+    #     for i in range(len(n)):
+    #         answ += n[i]
+    #     return int(answ)
+
+    def find_prime_num(n):
+        if n <= 1:
+            return False
+        
+        for i in range(2, num):
+            if num%i == 0:
+                return False
+        
+        return True
+
+    for i in range(1, len(numbers)+1):
+        _lst = set([int("".join(num)) for num in permutations(lst_nums, i)])
+        for num in _lst:
+            if num not in combs:
+                if find_prime_num(num):
+                    combs.append(num)
+                    cnt+=1
+    return cnt
