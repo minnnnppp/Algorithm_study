@@ -1,21 +1,23 @@
-with types_fees as (
-    select CAR_ID, CAR_TYPE, DAILY_FEE
-    from CAR_RENTAL_COMPANY_CAR
-    where CAR_TYPE in ('세단','SUV' )
-), disc as (
-    select CAR_TYPE, (100-DISCOUNT_RATE)/100 as TOTAL_RATE
-    from CAR_RENTAL_COMPANY_DISCOUNT_PLAN
-    where DURATION_TYPE like '30%'
-), disable as (
-    select distinct CAR_ID
+with car_type as (
+    select * 
+    from CAR_RENTAL_COMPANY_CAR 
+    where CAR_TYPE in ('세단' , 'SUV' )
+), inavaliables as (
+    select *
     from CAR_RENTAL_COMPANY_RENTAL_HISTORY
-    where END_DATE like '2022-11%' or START_DATE like '2022-11%'
-        or (START_DATE < '2022-11-01' and END_DATE > '2022-11-30')
+    where (date_format(START_DATE, '%Y-%m-%d') <= '2022-11-30' 
+           and date_format(END_DATE, '%Y-%m-%d') >= '2022-11-01') 
 )
-
-select case when CAR_ID not in (select * from disable) then CAR_ID end as CAR_ID
-    , f.CAR_TYPE, round((DAILY_FEE*30)*TOTAL_RATE) as FEE
-from types_fees f
-    join disc d on f.CAR_TYPE = d.CAR_TYPE
-having CAR_ID is not null and FEE >= 500000 and FEE < 2000000
-order by FEE desc, f.CAR_TYPE asc, CAR_ID desc
+    
+select distinct h.CAR_ID, c.CAR_TYPE
+    , case when (daily_fee*30)*(1-discount_rate/100) >= 500000 
+            and (daily_fee*30)*(1-discount_rate/100) < 2000000 
+        then round((daily_fee*30)*(1-discount_rate/100)) 
+    end as FEE
+from CAR_RENTAL_COMPANY_RENTAL_HISTORY h
+    left join car_type c on c.CAR_ID = h.CAR_ID
+    left join (select * from CAR_RENTAL_COMPANY_DISCOUNT_PLAN 
+               where DURATION_TYPE like '30%') p on c.CAR_TYPE = p.CAR_TYPE
+where h.CAR_ID not in (select CAR_ID from inavaliables)
+having FEE is not null
+order by 1 asc, 2 desc;
