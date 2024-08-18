@@ -1,20 +1,17 @@
-# 21년 가입자
-with us_21 as (
+with targets as (
     select *
     from USER_INFO
-    where year(JOINED) = 2021
-), sales as (
-    select u.USER_ID as JOIN_USER_ID, JOINED
-        , o.USER_ID as SALE_USER_ID, SALES_DATE
-    from us_21 u
-        left join ONLINE_SALE o on o.USER_ID=u.USER_ID
+    where YEAR(JOINED) = 2021
 )
 
-# select * from sales
-select year(SALES_DATE) as YEAR, month(SALES_DATE) as MONTH
-    , count(distinct SALE_USER_ID) as PURCHASED_USERS
-    , round(count(distinct SALE_USER_ID) / (select count(distinct JOIN_USER_ID) from sales), 1) as PUCHASED_RATIO
-from sales
-group by MONTH
-having YEAR is not null
-order by 1, 2
+select YEAR(SALES_DATE) as YEAR
+    , MONTH(SALES_DATE) as MONTH
+    , count(distinct case 
+                when USER_ID in (select USER_ID from targets) then USER_ID end
+    ) as PURCHASED_USERS
+    , round((count(
+        distinct case when USER_ID in (select USER_ID from targets) then USER_ID end)/
+             (select count(distinct USER_ID) from targets)), 1) as PUCHASED_RATIO
+from ONLINE_SALE
+group by YEAR, MONTH
+order by 1, 2;
