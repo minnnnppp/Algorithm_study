@@ -1,14 +1,20 @@
 def solution(number, k):
-    stack=list()   
+    total_len = len(number)-k
+    stack = []
+    maxx = 0
     
-    for n in number:
-        n = int(n)
-        while k > 0 and stack and int(stack[-1]) < n:
-            stack.pop()
-            k -= 1
-        stack.append(str(n))
+    for i, n in enumerate(list(number)):
+        while len(stack)>0 and int(stack[-1]) < int(n): 
+            if len(stack)+len(number[i:]) > total_len:
+                stack.pop()
+            else:
+                break
+        else:
+            if len(stack) == total_len:
+                continue
+            elif len(stack) > total_len:
+                stack.pop()
+
+        stack.append(n)
         
-    if k != 0:
-        stack = stack[:-k]
-    
     return ''.join(stack)
