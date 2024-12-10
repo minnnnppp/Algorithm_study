@@ -1,16 +1,12 @@
 def func(n):
 	if n == 0:
-		print('-', end = "")
-		return
+		return '-'
 	
-	func(n-1) 
-	print(' '*(3**(n-1)), end = "")
-	func(n-1)
+	return func(n-1) + ' '*(3**(n-1)) + func(n-1)
 
 while True:
 	try:
 		N = int(input())
-		func(N)
-		print()
+		print(func(N))
 	except:
 		break
